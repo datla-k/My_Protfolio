@@ -4,8 +4,8 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Koushik - Azure Data Engineer',
-  description: 'Portfolio of Koushik, an Azure Data Engineer',
+  title: 'Koushik - Azure Data Engineer Portfolio',
+  description: 'Portfolio of Koushik, an Azure Data Engineer specializing in scalable and efficient data solutions.',
 }
 
 export default function RootLayout({

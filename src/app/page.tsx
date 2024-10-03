@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Github, Linkedin, Codepen, Instagram, Twitter, AtSign, X, ExternalLink, Database, Server, Cloud, Code, BarChart, Zap, Award } from 'lucide-react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import Particles from "react-tsparticles"
+import { loadFull } from "tsparticles"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,8 +12,6 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-
-// ... rest of the file remains unchanged
 
 const experiences = [
   {
@@ -38,53 +37,59 @@ const experiences = [
 const projects = [
   {
     title: "Azure Data Lake Optimization",
-    description: "Improved data lake performance by 40% using advanced partitioning and indexing strategies. Implemented data skipping, Z-Ordering, and compaction of small files for optimal query speeds.",
-    image: "/placeholder.svg?height=100&width=150",
+    description: "Improved data lake performance by 40% using advanced partitioning and indexing strategies.",
+    image: "/placeholder.svg",
     tags: ["Azure Data Lake", "Azure Databricks", "Delta Lake", "PySpark"],
-    fullDescription: "This project involved a comprehensive analysis and optimization of our Azure Data Lake storage. By implementing advanced partitioning strategies and leveraging Delta Lake's indexing capabilities, we significantly improved query performance and reduced data retrieval times. The optimization process included data skipping, Z-Ordering, and compaction of small files, resulting in a 40% overall performance boost.",
-    challenges: "One of the main challenges was balancing the trade-off between storage cost and query performance. We had to carefully design our partitioning strategy to avoid over-partitioning while still achieving optimal query speeds.",
-    outcomes: "The project resulted in faster data analytics, reduced costs due to more efficient storage utilization, and improved data freshness for downstream applications.",
+    fullDescription: "This project involved a comprehensive analysis and optimization of our Azure Data Lake storage.",
+    challenges: "One of the main challenges was balancing the trade-off between storage cost and query performance.",
+    outcomes: "The project resulted in faster data analytics, reduced costs, and improved data freshness.",
     githubLink: "https://github.com/yourusername/azure-data-lake-optimization"
   },
   {
     title: "Real-time Analytics Dashboard",
-    description: "Built a real-time analytics dashboard for monitoring IoT device data streams. Leveraged Azure IoT Hub, Stream Analytics, and Power BI for dynamic visualizations.",
-    image: "/placeholder.svg?height=100&width=150",
+    description: "Built a real-time analytics dashboard for monitoring IoT device data streams.",
+    image: "/placeholder.svg",
     tags: ["Azure Stream Analytics", "Power BI", "Azure IoT Hub", "Azure Functions"],
-    fullDescription: "Developed a comprehensive real-time analytics dashboard to monitor and visualize data streams from thousands of IoT devices. The solution leverages Azure IoT Hub for device communication, Stream Analytics for real-time data processing, and Power BI for dynamic visualizations.",
-    challenges: "Handling the high volume and velocity of incoming data while ensuring low-latency updates to the dashboard was a significant challenge. We also had to design an efficient data model that could support real-time aggregations and historical analysis.",
-    outcomes: "The dashboard enabled real-time monitoring of device health, predictive maintenance alerts, and operational insights, leading to a 30% reduction in device downtime and significant cost savings.",
+    fullDescription: "Developed a comprehensive real-time analytics dashboard to monitor and visualize data streams from thousands of IoT devices.",
+    challenges: "Handling the high volume and velocity of incoming data while ensuring low-latency updates to the dashboard was a significant challenge.",
+    outcomes: "The dashboard enabled real-time monitoring of device health, predictive maintenance alerts, and operational insights.",
     githubLink: "https://github.com/yourusername/realtime-iot-dashboard"
   },
   {
     title: "Data Warehouse Migration",
-    description: "Led the migration of a 50TB on-premise data warehouse to Azure Synapse Analytics. Redesigned data model and optimized queries for improved performance.",
-    image: "/placeholder.svg?height=100&width=150",
+    description: "Led the migration of a 50TB on-premise data warehouse to Azure Synapse Analytics.",
+    image: "/placeholder.svg",
     tags: ["Azure Synapse Analytics", "Azure Data Factory", "T-SQL", "Power BI"],
-    fullDescription: "Spearheaded a large-scale migration project, moving a 50TB on-premise data warehouse to Azure Synapse Analytics. The project involved redesigning the data model to take advantage of Synapse's distributed architecture, setting up efficient ETL pipelines using Azure Data Factory, and optimizing queries for improved performance.",
-    challenges: "Ensuring data integrity during the migration, minimizing downtime, and re-engineering complex stored procedures to work efficiently in a distributed environment were our primary challenges.",
-    outcomes: "The migration resulted in a 60% reduction in query execution times, enabled real-time data ingestion capabilities, and significantly reduced infrastructure management overhead.",
+    fullDescription: "Spearheaded a large-scale migration project, moving a 50TB on-premise data warehouse to Azure Synapse Analytics.",
+    challenges: "Ensuring data integrity during the migration, minimizing downtime, and re-engineering complex stored procedures.",
+    outcomes: "The migration resulted in a 60% reduction in query execution times and enabled real-time data ingestion capabilities.",
     githubLink: "https://github.com/yourusername/synapse-migration"
   },
   {
     title: "Machine Learning Pipeline",
-    description: "Developed an end-to-end ML pipeline for predictive maintenance in manufacturing. Reduced unplanned downtime by 25% and improved overall equipment effectiveness by 15%.",
-    image: "/placeholder.svg?height=100&width=150",
+    description: "Developed an end-to-end ML pipeline for predictive maintenance in manufacturing.",
+    image: "/placeholder.svg",
     tags: ["Azure Machine Learning", "Python", "Scikit-learn", "Azure Kubernetes Service"],
-    fullDescription: "Created a comprehensive machine learning pipeline for predictive maintenance in a large manufacturing plant. The solution encompasses data ingestion from IoT sensors, data preprocessing, model training using Azure Machine Learning, and deployment of the model as an API on Azure Kubernetes Service.",
-    challenges: "Dealing with imbalanced datasets, ensuring model interpretability for stakeholders, and creating a scalable infrastructure that could handle real-time scoring were some of the key challenges we faced.",
-    outcomes: "The ML pipeline led to a 25% reduction in unplanned downtime, significant cost savings in maintenance, and improved overall equipment effectiveness (OEE) by 15%.",
+    fullDescription: "Created a comprehensive machine learning pipeline for predictive maintenance in a large manufacturing plant.",
+    challenges: "Dealing with imbalanced datasets, ensuring model interpretability, and creating a scalable infrastructure.",
+    outcomes: "The ML pipeline led to a 25% reduction in unplanned downtime and improved overall equipment effectiveness by 15%.",
     githubLink: "https://github.com/yourusername/ml-predictive-maintenance"
   }
 ]
 
 const skills = [
-  { name: "SQL", icon: Database, level: 90 },
-  { name: "Python", icon: Code, level: 85 },
-  { name: "Azure", icon: Cloud, level: 80 },
-  { name: "Spark", icon: Zap, level: 75 },
-  { name: "Data Modeling", icon: BarChart, level: 70 },
-  { name: "ETL", icon: Server, level: 85 }
+  { name: "SQL", icon: Database, level: 90, category: "Databases" },
+  { name: "MongoDB", icon: Database, level: 85, category: "Databases" },
+  { name: "PostgreSQL", icon: Database, level: 80, category: "Databases" },
+  { name: "Python", icon: Code, level: 85, category: "Languages" },
+  { name: "Scala", icon: Code, level: 75, category: "Languages" },
+  { name: "R", icon: Code, level: 70, category: "Languages" },
+  { name: "ETL", icon: Server, level: 85, category: "Data Engineering" },
+  { name: "Data Modeling", icon: BarChart, level: 80, category: "Data Engineering" },
+  { name: "Big Data Processing", icon: Zap, level: 85, category: "Data Engineering" },
+  { name: "Azure", icon: Cloud, level: 90, category: "Cloud Platforms" },
+  { name: "AWS", icon: Cloud, level: 85, category: "Cloud Platforms" },
+  { name: "GCP", icon: Cloud, level: 80, category: "Cloud Platforms" }
 ]
 
 const certifications = [
@@ -270,6 +275,7 @@ const blogPosts = [
 export default function Home() {
   const [hoveredExp, setHoveredExp] = useState<number | null>(null)
   const [hoveredProj, setHoveredProj] = useState<number | null>(null)
+  const [hoveredSkillCategory, setHoveredSkillCategory] = useState<string | null>(null)
   const [selectedProject, setSelectedProject] = useState<number | null>(null)
   const [selectedBlogPost, setSelectedBlogPost] = useState<number | null>(null)
   const [activeSection, setActiveSection] = useState('about')
@@ -315,10 +321,54 @@ export default function Home() {
     }
   }
 
+  const particlesInit = async (main: any) => {
+    await loadFull(main)
+  }
+
+  const particlesOptions = {
+    particles: {
+      number: { value: 80, density: { enable: true, value_area: 800 } },
+      color: { value: "#64ffda" },
+      shape: { type: "circle", stroke: { width: 0, color: "#000000" }, polygon: { nb_sides: 5 } },
+      opacity: { value: 0.5, random: false, anim: { enable: false, speed: 1, opacity_min: 0.1, sync: false } },
+      size: { value: 3, random: true, anim: { enable: false, speed: 40, size_min: 0.1, sync: false } },
+      line_linked: { enable: true, distance: 150, color: "#64ffda", opacity: 0.4, width: 1 },
+      move: {
+        enable: true, speed: 6, direction: "none", random: false, straight: false, out_mode: "out", bounce: false,
+        attract: { enable: false, rotateX: 600, rotateY: 1200 }
+      }
+    },
+    interactivity: {
+      detect_on: "canvas",
+      events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+      modes: {
+        grab: { distance: 400, line_linked: { opacity: 1 } },
+        bubble: { distance: 400, size: 40, duration: 2, opacity: 8, speed: 3 },
+        repulse: { distance: 200, duration: 0.4 },
+        push: { particles_nb: 4 },
+        remove: { particles_nb: 2 }
+      }
+    },
+    retina_detect: true
+  }
+
   return (
-    <div className="min-h-screen bg-[#0a192f] text-[#8892b0] flex">
-      <div className="w-1/4 fixed h-screen p-10 flex flex-col justify-between">
+    <div className="min-h-screen bg-[#0a192f] text-[#8892b0] flex relative">
+      <Particles
+        id="tsparticles"
+        init={particlesInit}
+        options={particlesOptions}
+        className="absolute inset-0 z-0"
+      />
+      <div className="w-1/4 fixed h-screen p-10 flex flex-col justify-between z-10">
         <div>
+          <Image
+            src="/placeholder.svg"
+            alt="Profile Photo"
+            width={150}
+            height={150}
+            className="rounded-full mb-4"
+          />
           <h1 className="text-5xl font-bold text-[#ccd6f6] mb-2">KOUSHIK</h1>
           <h2 className="text-2xl text-[#64ffda] mb-4">Azure Data Engineer</h2>
           <p className="mb-8">
@@ -350,7 +400,7 @@ export default function Home() {
           <a href="#" className="text-[#8892b0] hover:text-[#64ffda]"><AtSign size={20} /></a>
         </div>
       </div>
-      <div className="w-3/4 ml-auto p-10">
+      <div className="w-3/4 ml-auto p-10 z-10">
         <section id="about" className="mb-20">
           <h3 className="text-2xl text-[#ccd6f6] mb-6">About Me</h3>
           <p>
@@ -365,12 +415,9 @@ export default function Home() {
           <h3 className="text-2xl text-[#ccd6f6] mb-6">Certifications</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {certifications.map((cert, index) => (
-              <motion.div
+              <div
                 key={index}
                 className="bg-[#112240] p-4 rounded-lg"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <div className="flex items-center mb-2">
                   <Award className="text-[#64ffda] mr-2" size={20} />
@@ -386,21 +433,37 @@ export default function Home() {
                 >
                   Verify
                 </a>
-              </motion.div>
+              </div>
             ))}
           </div>
         </section>
 
         <section id="skills" className="mb-20">
           <h3 className="text-2xl text-[#ccd6f6] mb-6">Skills</h3>
-          <div className="flex flex-wrap gap-4">
-            {skills.map((skill, index) => (
-              <div key={index} className="flex items-center bg-[#112240] px-3 py-2 rounded-full">
-                <skill.icon size={16} className="text-[#64ffda] mr-2" />
-                <span className="text-sm font-medium">{skill.name}</span>
+          {['Databases', 'Languages', 'Data Engineering', 'Cloud Platforms'].map((category) => (
+            <div 
+              key={category} 
+              className="mb-6 p-4 rounded-lg transition-all duration-300 ease-in-out"
+              style={{
+                transform: hoveredSkillCategory === category ? 'scale(1.05)' : 'scale(1)',
+                boxShadow: hoveredSkillCategory === category ? '0 10px 30px -15px rgba(2,12,27,0.7)' : 'none'
+              }}
+              onMouseEnter={() => setHoveredSkillCategory(category)}
+              onMouseLeave={() => setHoveredSkillCategory(null)}
+            >
+              <h4 className="text-xl text-[#ccd6f6] mb-4">{category}</h4>
+              <div className="flex flex-wrap gap-4">
+                {skills
+                  .filter((skill) => skill.category === category)
+                  .map((skill, index) => (
+                    <div key={index} className="flex items-center bg-[#112240] px-3 py-2 rounded-full">
+                      <skill.icon size={16} className="text-[#64ffda] mr-2" />
+                      <span className="text-sm font-medium">{skill.name}</span>
+                    </div>
+                  ))}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </section>
 
         <section id="experience" className="mb-20">
