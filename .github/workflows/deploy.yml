@@ -11,21 +11,26 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Use Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+    - name: Build Docker image
+      run: docker build -t my-nextjs-app .
 
-    - name: Install dependencies
-      run: npm ci
+    - name: Debug - List files in Docker image
+      run: docker run --rm my-nextjs-app ls -la
 
-    - name: Build
+    - name: Debug - Check package.json
+      run: docker run --rm my-nextjs-app cat package.json
+
+    - name: Debug - Check package-lock.json
+      run: docker run --rm my-nextjs-app cat package-lock.json
+
+    - name: Run build in Docker
+      run: docker run --rm my-nextjs-app npm run build
+
+    - name: Copy build output
       run: |
-        echo "Node version: $(node -v)"
-        echo "NPM version: $(npm -v)"
-        npm run build --verbose
-      env:
-        CI: true
+        docker create --name temp my-nextjs-app
+        docker cp temp:/app/out ./out
+        docker rm temp
 
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.5
